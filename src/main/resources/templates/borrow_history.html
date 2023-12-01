@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Books borrow history</title>
+</head>
+<body>
+    <h1>書籍貸し出し履歴一覧</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Book Title</th>
+                <th>Borrow Date</th>
+            </tr>
+        </thead>
+        <tbody th:each="history : ${historyList}">
+            <tr>
+                <td th:text="${history.book.title}"></td>
+                <td th:text="${history.borrowDate}"></td>
+                <td th:text="${history.returnDate}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
