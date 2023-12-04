@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Book.BookStatus;
 
-
-
 @Service
 public class BookService {
     @Autowired
@@ -26,6 +24,7 @@ public class BookService {
         return bookRepository.save(book);
     }
     
+    //検索結果を表示させるためのメソッド
     public List<Book> searchBooks(String id) {
         List<Book> bookList = new ArrayList<>();
 

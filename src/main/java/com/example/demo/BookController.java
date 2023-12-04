@@ -63,7 +63,7 @@ public class BookController {
         bookService.updateBook(updatedBook);
         List<Book> bookList = bookService.getAllBooks();
         mv.addObject("books", bookList);
-        mv.setViewName("redirect:/");
+        mv.setViewName("index");
         return mv;
     }
     
