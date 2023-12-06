@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+    <title>Edit Book</title>
+</head>
+<body>
+    <h1>書籍の編集</h1>
+
+   　　<form action="/update" method="post" th:object="${book}">
+         <input type="hidden" name="id" th:value="${book.id}">
+        
+        <label for="title">タイトル:</label>
+        <input type="text" th:field="*{title}" required>
+        
+        <label for="author">著者:</label>
+        <input type="text" th:field="*{author}" required>
+        
+        <label for="isbn">ISBN:</label>
+        <input type="text" th:field="*{isbn}" required>
+        
+        <button type="submit">更新</button>
+        
+        <!-- 元々のstatusを送信 -->
+    　　　　<input type="hidden" name="originalStatus" th:value="${originalStatus}">
+        
+    </form>
+    <a href="/">書籍一覧へ戻る</a>
+</body>
+</html>

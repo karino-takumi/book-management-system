@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>削除結果</title>
+    <style>
+        .success-message { color: green; }
+        .error-message { color: red; }
+    </style>
+</head>
+<body>
+    <h1>削除結果</h1>
+    
+    <div th:if="${message == '書籍の削除に成功しました。'}">
+        <p class="success-message">削除が完了しました。</p>
+    </div>
+    
+    <div th:if="${message == '指定された書籍が見つかりません。' or message == '書籍の削除に失敗しました。'}">
+        <p class="error-message">削除に失敗しました。</p>
+    </div>
+
+    <a href="/">戻る</a>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html　xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Loan and Return</title>
+</head>
+<body>
+    <h1>書籍の貸し出しと返却</h1>
+    
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>タイトル</th>
+           　<th>著者</th>
+            <th>貸し出し状況</th>
+            <th>貸し出し,返却</th>
+        </tr>
+        
+        <tr th:each="book : ${books}">
+            <td th:text="${book.id}"></td>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.status}"></td>
+            <td>
+             <!-- 書籍のIDをフォームに含めて貸し出し処理を実行する -->
+               <form th:action="@{/borrow/{id}(id=${book.id})}" method="post">
+               <input type="hidden" name="bookId" th:value="${book.id}">
+               <button type="submit">借りる</button>
+               </form>
+
+             <!-- 書籍のIDをフォームに含めて返却処理を実行する -->
+               <form th:action="@{/return/{id}(id=${book.id})}" method="post">
+               <input type="hidden" name="bookId" th:value="${book.id}">
+               <button type="submit">返却する</button>
+               </form>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    
+    <a href="/">書籍一覧へ戻る</a>
+</body>
+</html>
