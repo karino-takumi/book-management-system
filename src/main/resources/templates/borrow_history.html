@@ -9,8 +9,8 @@
     <table>
         <thead>
             <tr>
-                <th>Book Title</th>
-                <th>Borrow Date</th>
+                <th>タイトル</th>
+                <th>貸し出し履歴</th>
             </tr>
         </thead>
         <tbody th:each="history : ${historyList}">
@@ -21,5 +21,6 @@
             </tr>
         </tbody>
     </table>
+    <a href="/">書籍一覧へ戻る</a>
 </body>
 </html>

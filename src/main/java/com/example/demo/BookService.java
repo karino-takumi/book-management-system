@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.Book.BookStatus;
-
 @Service
 public class BookService {
     @Autowired
@@ -16,13 +14,25 @@ public class BookService {
     @Autowired
     private BorrowHistoryRepository borrowHistoryRepository;
 
+    //全書籍の情報を取得する
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
-
+    
+    //書籍の情報を保存するためのメソッド
     public Book createBook(Book book) {
         return bookRepository.save(book);
     }
+    
+ // 書籍の状態を更新するメソッド
+    public void updateBook(Book updatedBook) {
+       bookRepository.save(updatedBook);
+   }
+
+   //全書籍のidを取得するメソッド
+   public Book getBookById(Long id) {
+       return bookRepository.findById(id).orElse(null);
+   }
     
     //検索結果を表示させるためのメソッド
     public List<Book> searchBooks(String id) {
@@ -52,14 +62,7 @@ public class BookService {
         return bookList;
     }
 
-    public Book updateBook(Book updatedBook) {
-        return bookRepository.save(updatedBook);
-    }
-
-    public Book getBookById(Long id) {
-        return bookRepository.findById(id).orElse(null);
-    }
-    
+    //書籍の情報を削除するためのメソッド
     public String deleteBookById(Long id) {
         try {
             // データベースから指定されたIDの書籍を削除
@@ -79,27 +82,35 @@ public class BookService {
         return borrowHistoryRepository.findAll();
     }
     
-   // 貸し出し処理を行うためのメソッド
+  //貸し出し処理を行うためのメソッド
     public void borrowBook(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
-        book.setStatus(BookStatus.BORROWED);
-        bookRepository.save(book);
+        Book book = getBookById(bookId);
 
-        BorrowHistory history = new BorrowHistory();
-        history.setBook(book);
-        history.setBorrowDate(LocalDateTime.now());
-        borrowHistoryRepository.save(history);
+        if (book != null && book.getStatus().equals("AVAILABLE")) {
+            book.setStatus("BORROWED");
+            bookRepository.save(book);
+
+            BorrowHistory history = new BorrowHistory();
+            history.setBook(book);
+            history.setBorrowDate(LocalDateTime.now());
+            borrowHistoryRepository.save(history);
+        }
     }
 
-    // 返却処理を行うためのメソッド
+    //返却処理を行うためのメソッド
     public void returnBook(Long bookId) {
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
-        book.setStatus(BookStatus.AVAILABLE);
-        bookRepository.save(book);
+    	Book book = getBookById(bookId);
 
-        BorrowHistory history = borrowHistoryRepository.findByBookIdAndReturnDateIsNull(bookId);
-        history.setReturnDate(LocalDateTime.now());
-        borrowHistoryRepository.save(history);
+        if (book != null && book.getStatus() .equals("BORROWED")) {
+            book.setStatus("AVAILABLE");
+            bookRepository.save(book);
+
+            BorrowHistory history = new BorrowHistory();
+            history.setBook(book);
+            history.setReturnDate(LocalDateTime.now());
+            borrowHistoryRepository.save(history);
+            
+        }
     }
     
     //新規登録をするためのメソッド
@@ -108,7 +119,7 @@ public class BookService {
         book.setTitle(title);
         book.setAuthor(author);
         book.setIsbn(isbn); 
-        book.setStatus(Book.BookStatus.AVAILABLE);
+        book.setStatus("AVAILABLE");
         bookRepository.save(book);
     }
 

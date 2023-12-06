@@ -15,7 +15,6 @@ public class BorrowHistory {
     private Long id;
     @ManyToOne
     private Book book;
-    private Long userId; 
     private LocalDateTime borrowDate;
     private LocalDateTime returnDate;
 
@@ -26,14 +25,6 @@ public class BorrowHistory {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
 
     public Book getBook() {
         return book;

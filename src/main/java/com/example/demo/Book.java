@@ -2,13 +2,13 @@ package com.example.demo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "book")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +24,8 @@ public class Book {
     @Column(name = "isbn")
     private String isbn;
     
-    @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(20) DEFAULT 'AVAILABLE'")
-    private BookStatus status;
-
-    public enum BookStatus {
-        AVAILABLE, BORROWED
-    }
+    private String status;
 
     public Long getId() {
         return id;
@@ -64,11 +59,12 @@ public class Book {
         this.isbn = isbn;
     }
 
-    public BookStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(BookStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
+    
 }

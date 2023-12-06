@@ -45,20 +45,27 @@ public class BookController {
   
     //編集画面へ遷移するためのメソッド
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public ModelAndView editBook(@RequestParam(name = "id") Long id, ModelAndView mv) {
+    public ModelAndView editBook(@RequestParam(name = "id") Long id,
+    		ModelAndView mv) {
         Book book = bookService.getBookById(id);
         mv.addObject("book", book);
+        mv.addObject("originalStatus", book.getStatus());
         mv.setViewName("book_edit");
         return mv;
     }
     
     //編集内容を保存するためのメソッド
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public ModelAndView updateBook(@ModelAttribute("book") Book updatedBook, ModelAndView mv) {
+    public ModelAndView updateBook(@ModelAttribute Book updatedBook, 
+    		@RequestParam("originalStatus") String originalStatus, 
+    		ModelAndView mv) {
+        updatedBook.setStatus(originalStatus);
         bookService.updateBook(updatedBook);
+        // 更新後の本のリストを取得
         List<Book> bookList = bookService.getAllBooks();
         mv.addObject("books", bookList);
         mv.setViewName("index");
+
         return mv;
     }
     
@@ -88,17 +95,40 @@ public class BookController {
         return mv;
     }
     
-    // 貸し出しメソッド
-    @RequestMapping(value = "/borrow", method = RequestMethod.POST)
-    public void borrowBook(@PathVariable Long bookId) {
+    //貸し出し返却画面へ遷移するためのメソッド
+    @RequestMapping(value = "/loanReturn")
+    public ModelAndView loanReturn(ModelAndView mv) {
+        List<Book> books = bookService.getAllBooks();
+        mv.addObject("books", books);
+        mv.setViewName("book_loan_return");
+        return mv;
+    }
+    
+    //貸し出しメソッド
+    @RequestMapping(value = "/borrow/{id}", method = RequestMethod.POST)
+    public ModelAndView borrowBook(@PathVariable("id") Long bookId,
+    		ModelAndView mv) {
         bookService.borrowBook(bookId);
+        List<Book> bookList = bookService.getAllBooks();
+        mv.addObject("books", bookList);
+        mv.setViewName("index");
+
+        return mv;
+        
+        }
+
+    //返却メソッド
+    @RequestMapping(value = "/return/{id}", method = RequestMethod.POST)
+    public ModelAndView returnBook(@PathVariable("id") Long bookId,
+    		ModelAndView mv) {
+    	bookService.returnBook(bookId);
+        List<Book> bookList = bookService.getAllBooks();
+        mv.addObject("books", bookList);
+        mv.setViewName("index");
+
+        return mv;
     }
 
-    // 返却メソッド
-    @RequestMapping(value = "/return", method = RequestMethod.POST)
-    public void returnBook(@PathVariable Long bookId) {
-        bookService.returnBook(bookId);
-    }
     
     //新規登録画面へ遷移させるためのメソッド
     @RequestMapping(value = "/add")
@@ -109,7 +139,7 @@ public class BookController {
     }
     
     //新規登録をするためのメソッド
-    @RequestMapping(value = "/insert")
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public ModelAndView insert(
             @RequestParam(name = "title") String title,
             @RequestParam(name = "author") String author,
